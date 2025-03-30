@@ -1,23 +1,10 @@
-# 代码使用说明
-项目代码包含2个分支：
-- master : 主分支，包含完整版代码，作为大家的编码参考使用
-- init : 初始化分支，实战篇的初始代码，建议大家以这个分支作为自己开发的基础代码
-## 1.下载
-克隆完整项目
-```git
-git clone https://gitee.com/huyi612/hm-dianping.git
-```
-切换分支
-```git
-git checkout init
-```
+项目描述
+  该项目为一个综合性社交平台，用户可以查看附近商铺，并参与抢购商铺举办的优惠卷等活动，用户之间可以相互评论点赞聊天，商户可以对自家店铺进行管理，实现平台满足海量用户的高并发读写和数据一致性要求，确保用户操作的实时响应，并通过集群架构实现读写分离和高可用性设计        
 
-## 2.常见问题
-部分同学直接使用了master分支项目来启动，控制台会一直报错:
-```
-NOGROUP No such key 'stream.orders' or consumer group 'g1' in XREADGROUP with GROUP option
-```
-这是因为我们完整版代码会尝试访问Redis，连接Redis的Stream。建议同学切换到init分支来开发，如果一定要运行master分支，请先在Redis运行一下命令：
-```text
-XGROUP CREATE stream.orders g1 $ MKSTREAM
-```
+应用技术
+  Spring Boot、Mybaits Plus、Redis、Nginx、Lua 
+  
+项目亮点
+  应用Redis，采用一主两从加哨兵的集群方案，缓存商户营业状态、菜品分类、点赞情况等信息，解决了双写一致性问题
+  构建完整QPS缓存体系-缓存穿透（布隆过滤器，误判率<0.3%）雪崩（随机TTL+分级缓存）击穿（逻辑过期+互斥锁）
+  采用Redis+Lua原子操作实现预扣库存，配合DB乐观锁（CAS）达成零超卖，操作耗时稳定在8ms，热点响应数据<5ms
